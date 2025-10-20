@@ -28,8 +28,6 @@ pub struct DemoApp {
     #[serde(skip)] // This how you opt-out of serialization of a field
     value: f32,
 
-    // #[serde(skip)]
-    // syntax: Syntax,
     #[serde(skip)]
     completer: Completer,
 
@@ -138,9 +136,9 @@ impl eframe::App for DemoApp {
                             std::fs::read_to_string(path.display().to_string()).unwrap_or_default();
                     }
                 }
+                ui.separator();
             }
 
-            ui.separator();
 
             self.editor
                 .show_with_completer(ui, &mut self.code, &mut self.completer);
