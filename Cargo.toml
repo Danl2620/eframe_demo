@@ -2,7 +2,7 @@
 authors = ["Emil Ernerfeldt <emil.ernerfeldt@gmail.com>", "Dan L"]
 name = "eframe_demo"
 version = "0.1.0"
-edition = "2024"
+edition = "2021"
 include = ["LICENSE-APACHE", "LICENSE-MIT", "**/*.rs", "Cargo.toml"]
 rust-version = "1.88"
 
@@ -26,6 +26,7 @@ egui_code_editor = { version = "0.2" , default-features = false, features = [
 ] }
 colorful = "0.2.2"
 log = "0.4.27"
+rfd = "0.15.4"
 
 # You only need serde if you want app persistence:
 serde = { version = "1.0.219", features = ["derive"] }

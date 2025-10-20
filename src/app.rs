@@ -37,7 +37,7 @@ pub struct DemoApp {
 
     #[serde(skip)]
     code: String,
-    
+
     #[serde(skip)]
     editor: CodeEditor,
 }
@@ -132,11 +132,16 @@ impl eframe::App for DemoApp {
 
             ui.separator();
 
-            let editor = self.editor
-                .show_with_completer(ui, &mut self.code, &mut self.completer);
-            // .show(ui, &mut self.code); // to use without completer
+             if ui.button("Open file…").clicked()
+                && let Some(path) = rfd::FileDialog::new().pick_file()
+            {
+                self.code = std::fs::read_to_string(path.display().to_string()).unwrap_or_default();
+            }
 
-            // ui.add(editor);
+            ui.separator();
+
+            self.editor
+                .show_with_completer(ui, &mut self.code, &mut self.completer);
 
             ui.with_layout(egui::Layout::bottom_up(egui::Align::LEFT), |ui| {
                 powered_by_egui_and_eframe(ui);

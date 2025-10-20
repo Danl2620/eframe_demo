@@ -15,6 +15,11 @@
       in with pkgs; {
         devShells.default = mkShell rec {
           buildInputs = [
+            # basic stuff
+            git
+            curl
+            which
+
             # Rust
             rust-bin.stable.latest.default
             trunk
