@@ -1,4 +1,3 @@
-use colorful::{Color, Colorful};
 use egui_code_editor::{CodeEditor, ColorTheme, Completer, Syntax};
 //use egui_code_editor::{CodeEditor, Syntax, ColorTheme, TokenType};
 
@@ -31,7 +30,6 @@ pub struct DemoApp {
 
     // #[serde(skip)]
     // syntax: Syntax,
-
     #[serde(skip)]
     completer: Completer,
 
@@ -132,10 +130,14 @@ impl eframe::App for DemoApp {
 
             ui.separator();
 
-             if ui.button("Open file…").clicked()
-                && let Some(path) = rfd::FileDialog::new().pick_file()
+            #[cfg(not(target_arch = "wasm32"))]
             {
-                self.code = std::fs::read_to_string(path.display().to_string()).unwrap_or_default();
+                if ui.button("Open file…").clicked() {
+                    if let Some(path) = rfd::FileDialog::new().pick_file() {
+                        self.code =
+                            std::fs::read_to_string(path.display().to_string()).unwrap_or_default();
+                    }
+                }
             }
 
             ui.separator();
