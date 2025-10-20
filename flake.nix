@@ -21,9 +21,7 @@
             which
 
             # Rust
-            (rust-bin.stable.latest.complete.override {
-              targets = [ "wasm32-unknown-unknown" ];
-            })
+            (rust-bin.fromRustupToolchainFile ./rust-toolchain.toml)
             trunk
 
             # misc. libraries
