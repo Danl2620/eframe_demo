@@ -1,7 +1,7 @@
 [package]
-name = "eframe_template"
+authors = ["Emil Ernerfeldt <emil.ernerfeldt@gmail.com>", "Dan L"]
+name = "eframe_demo"
 version = "0.1.0"
-authors = ["Emil Ernerfeldt <emil.ernerfeldt@gmail.com>"]
 edition = "2024"
 include = ["LICENSE-APACHE", "LICENSE-MIT", "**/*.rs", "Cargo.toml"]
 rust-version = "1.88"
@@ -20,10 +20,16 @@ eframe = { version = "0.33.0", default-features = false, features = [
     "wayland",       # To support Linux (and CI)
     "x11",           # To support older Linux distributions (restores one of the default features)
 ] }
+egui_code_editor = { version = "0.2" , default-features = false, features = [
+    "editor",
+    "egui",
+] }
+colorful = "0.2.2"
 log = "0.4.27"
 
 # You only need serde if you want app persistence:
 serde = { version = "1.0.219", features = ["derive"] }
+egui_demo_lib = "0.33.0"
 
 # native:
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]

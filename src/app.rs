@@ -1,25 +1,69 @@
+use colorful::{Color, Colorful};
+use egui_code_editor::{CodeEditor, ColorTheme, Completer, Syntax};
+//use egui_code_editor::{CodeEditor, Syntax, ColorTheme, TokenType};
+
+// fn color(token: TokenType) -> Color {
+//     match token {
+//         TokenType::Comment(_) => Color::Grey37,
+//         TokenType::Function => Color::Yellow3b,
+//         TokenType::Keyword => Color::IndianRed1c,
+//         TokenType::Literal => Color::NavajoWhite1,
+//         TokenType::Numeric(_) => Color::MediumPurple,
+//         TokenType::Punctuation(_) => Color::Orange3,
+//         TokenType::Special => Color::Cyan,
+//         TokenType::Str(_) => Color::Green,
+//         TokenType::Type => Color::GreenYellow,
+//         TokenType::Whitespace(_) => Color::White,
+//         TokenType::Unknown => Color::Pink1,
+//         TokenType::Hyperlink => Color::Blue,
+//     }
+// }
+
 /// We derive Deserialize/Serialize so we can persist app state on shutdown.
 #[derive(serde::Deserialize, serde::Serialize)]
 #[serde(default)] // if we add new fields, give them default values when deserializing old state
-pub struct TemplateApp {
+pub struct DemoApp {
     // Example stuff:
     label: String,
 
     #[serde(skip)] // This how you opt-out of serialization of a field
     value: f32,
+
+    // #[serde(skip)]
+    // syntax: Syntax,
+
+    #[serde(skip)]
+    completer: Completer,
+
+    #[serde(skip)]
+    code: String,
+    
+    #[serde(skip)]
+    editor: CodeEditor,
 }
 
-impl Default for TemplateApp {
+impl Default for DemoApp {
     fn default() -> Self {
+        let syntax = Syntax::rust();
+        let completer = Completer::new_with_syntax(&syntax).with_user_words();
         Self {
             // Example stuff:
             label: "Hello World!".to_owned(),
             value: 2.7,
+            completer,
+            code: "fn main() {\n    println!(\"Hello World!\");\n}".to_owned(),
+            editor: CodeEditor::default()
+                .id_source("code editor")
+                .with_rows(12)
+                .with_fontsize(14.0)
+                .with_theme(ColorTheme::GRUVBOX)
+                //.with_syntax(completer.syntax)
+                .with_numlines(true),
         }
     }
 }
 
-impl TemplateApp {
+impl DemoApp {
     /// Called once before the first frame.
     pub fn new(cc: &eframe::CreationContext<'_>) -> Self {
         // This is also where you can customize the look and feel of egui using
@@ -35,7 +79,7 @@ impl TemplateApp {
     }
 }
 
-impl eframe::App for TemplateApp {
+impl eframe::App for DemoApp {
     /// Called by the framework to save state before shutdown.
     fn save(&mut self, storage: &mut dyn eframe::Storage) {
         eframe::set_value(storage, eframe::APP_KEY, self);
@@ -67,7 +111,7 @@ impl eframe::App for TemplateApp {
 
         egui::CentralPanel::default().show(ctx, |ui| {
             // The central panel the region left after adding TopPanel's and SidePanel's
-            ui.heading("eframe template");
+            ui.heading("eframe Demo");
 
             ui.horizontal(|ui| {
                 ui.label("Write something: ");
@@ -82,9 +126,17 @@ impl eframe::App for TemplateApp {
             ui.separator();
 
             ui.add(egui::github_link_file!(
-                "https://github.com/emilk/eframe_template/blob/main/",
+                "https://github.com/emilk/eframe_Demo/blob/main/",
                 "Source code."
             ));
+
+            ui.separator();
+
+            let editor = self.editor
+                .show_with_completer(ui, &mut self.code, &mut self.completer);
+            // .show(ui, &mut self.code); // to use without completer
+
+            // ui.add(editor);
 
             ui.with_layout(egui::Layout::bottom_up(egui::Align::LEFT), |ui| {
                 powered_by_egui_and_eframe(ui);

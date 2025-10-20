@@ -2,13 +2,13 @@
 
 set -e
 
-echo "To fill the template tell me your egui project crate name: "
+echo "To fill the demo tell me your egui project crate name: "
 read crate
 
-echo "To fill the template tell me your name (for author in Cargo.toml): "
+echo "To fill the demo tell me your name (for author in Cargo.toml): "
 read name
 
-echo "To fill the template tell me your e-mail address (also for Cargo.toml): "
+echo "To fill the demo tell me your e-mail address (also for Cargo.toml): "
 read email
 
 echo "Patching files..."
@@ -26,10 +26,10 @@ else
   }
 fi
 
-sed_inplace "s/eframe_template/$crate/g" Cargo.toml
-sed_inplace "s/eframe_template/$crate/g" src/main.rs
-sed_inplace "s/eframe template/$crate/g" index.html
-sed_inplace "s/eframe_template/$crate/g" assets/sw.js
+sed_inplace "s/eframe_demo/$crate/g" Cargo.toml
+sed_inplace "s/eframe_demo/$crate/g" src/main.rs
+sed_inplace "s/eframe demo/$crate/g" index.html
+sed_inplace "s/eframe_demo/$crate/g" assets/sw.js
 sed_inplace "s/Emil Ernerfeldt/$name/g" Cargo.toml
 sed_inplace "s/emil.ernerfeldt@gmail.com/$email/g" Cargo.toml
 
