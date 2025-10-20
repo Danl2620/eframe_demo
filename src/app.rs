@@ -44,7 +44,7 @@ impl Default for DemoApp {
         let completer = Completer::new_with_syntax(&syntax).with_user_words();
         Self {
             // Example stuff:
-            label: "Hello World!".to_owned(),
+            label: "Hello World, now!!".to_owned(),
             value: 2.7,
             completer,
             code: "fn main() {\n    println!(\"Hello World!\");\n}".to_owned(),
@@ -103,9 +103,22 @@ impl eframe::App for DemoApp {
 
                 egui::widgets::global_theme_preference_buttons(ui);
             });
+
         });
 
         egui::CentralPanel::default().show(ctx, |ui| {
+            egui::SidePanel::left("side_panel").show(ctx, |ui| {
+                ui.heading("Side Panel");
+                ui.horizontal(|ui| {
+                    ui.label("Write something: ");
+                    ui.text_edit_singleline(&mut self.label);
+                });
+                if ui.button("Increment").clicked() {
+                    self.value += 1.0;
+                }
+                ui.add(egui::Slider::new(&mut self.value, 0.0..=10.0).text("value"));
+            });
+
             // The central panel the region left after adding TopPanel's and SidePanel's
             ui.heading("eframe Demo");
 
@@ -138,7 +151,6 @@ impl eframe::App for DemoApp {
                 }
                 ui.separator();
             }
-
 
             self.editor
                 .show_with_completer(ui, &mut self.code, &mut self.completer);
