@@ -2,7 +2,7 @@
   description = "eframe devShell";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11";
     rust-overlay.url = "github:oxalica/rust-overlay";
     flake-utils.url = "github:numtide/flake-utils";
   };
@@ -13,7 +13,9 @@
         overlays = [ (import rust-overlay) ];
         pkgs = import nixpkgs { inherit system overlays; };
       in with pkgs; {
-        devShells.default = mkShell rec {
+        devShells.default = let
+          rust_toolchain = rust-bin.fromRustupToolchainFile ./rust-toolchain.toml;
+        in mkShell rec {
           buildInputs = [
             # basic stuff
             git
@@ -21,9 +23,7 @@
             which
 
             # Rust
-            (rust-bin.stable.latest.complete.override {
-              targets = [ "wasm32-unknown-unknown" ];
-            })
+            rust_toolchain
             trunk
 
             # misc. libraries
@@ -33,20 +33,28 @@
             # GUI libs
             libxkbcommon
             libGL
+            pipewire
             fontconfig
 
             # wayland libraries
-            # wayland
+            wayland
 
-            # # x11 libraries
-            # xorg.libXcursor
-            # xorg.libXrandr
-            # xorg.libXi
-            # xorg.libX11
+            # x11 libraries
+            xorg.libXcursor
+            xorg.libXrandr
+            xorg.libXi
+            xorg.libX11
+
 
           ];
 
+          RUST_SRC_PATH = "${rust_toolchain}/lib/rustlib/src/rust/library";
           LD_LIBRARY_PATH = "${lib.makeLibraryPath buildInputs}";
         };
       });
 }
+
+
+# libfreetype6-dev libasound2-dev libexpat1-dev libxcb-composite0-dev \
+#    libbz2-dev libsndio-dev freeglut3-dev libxmu-dev libxi-dev libfontconfig1-dev \
+#    libxcursor-dev
